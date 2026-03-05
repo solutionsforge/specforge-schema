@@ -33,11 +33,11 @@ Examples do not require an RFC. They are Patch-level changes.
 
 ## How to Improve Documentation
 
-Documentation source files live in `site/src/content/docs/`. To improve docs:
+Documentation source files live in `site/src/`. The site is a Next.js static export. To improve docs:
 
 1. Fork the repository.
-2. Edit or add files in `site/src/content/docs/`.
-3. Follow the existing Astro Starlight content structure.
+2. Edit or add files in `site/src/` (pages in `app/`, components in `components/`, data in `data/`).
+3. Run `cd site && npm run build` to verify the site builds without errors.
 4. Open a Pull Request describing your changes.
 
 Documentation fixes do not require an RFC. They are Patch-level changes.
@@ -88,6 +88,20 @@ Examples:
 | `ticket.startedAt` | Engine | Runtime timestamp, not part of the spec |
 | `ticket.assignedAgent` | Engine | Execution detail, not specification |
 | `ticket.score` | Engine | Quality metric computed at runtime |
+
+## Build Tooling on the Format
+
+The format is MIT-licensed and intentionally decoupled from any engine. You are
+encouraged to build your own tools on top of it:
+
+- **Validators** in any language (the JSON Schema is the source of truth)
+- **Converters** between SFF and your own task/ticket formats (Jira, Linear, GitHub Issues)
+- **Generators** that produce `.sf.json` from natural language, PRDs, or existing codebases
+- **Visualizers** that render the dependency graph
+- **Executors** that consume specs and drive your own agents
+
+If you build something, open an issue with the `ecosystem` label. We maintain a
+tooling list in the README and will add your project to it.
 
 ## Code of Conduct
 
