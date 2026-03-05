@@ -260,10 +260,6 @@ body {
   box-shadow: 0 4px 20px rgba(139, 92, 246, 0.1);
 }
 
-.overview-card:hover .overview-card-icon {
-  transform: scale(1.15);
-}
-
 .overview-card:hover h3 {
   color: var(--purple);
 }
@@ -271,7 +267,6 @@ body {
 .overview-card-icon {
   font-size: 18px;
   margin-bottom: 12px;
-  transition: transform 0.25s ease;
 }
 
 .overview-card h3 {
