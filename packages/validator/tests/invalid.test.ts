@@ -1,18 +1,18 @@
 import { describe, it, expect } from 'vitest';
-import { validate } from '../src/validate';
+import { validate } from '../src/validator/validate';
 
 describe('invalid specs', () => {
   it('rejects empty object', () => {
     const result = validate({});
     expect(result.valid).toBe(false);
     expect(result.errors).toBeDefined();
-    expect(result.errors!.length).toBeGreaterThan(0);
+    expect(result.errors.length).toBeGreaterThan(0);
   });
 
   it('rejects missing project', () => {
     const result = validate({ specforgeVersion: '1.0' });
     expect(result.valid).toBe(false);
-    expect(result.errors!.some((e) => e.includes('project'))).toBe(true);
+    expect(result.errors.some((e) => e.path.includes('project') || e.message.includes('project'))).toBe(true);
   });
 
   it('rejects missing specforgeVersion', () => {
@@ -20,7 +20,7 @@ describe('invalid specs', () => {
       project: { id: '00000000-0000-0000-0000-000000000001', name: 'Test' },
     });
     expect(result.valid).toBe(false);
-    expect(result.errors!.some((e) => e.includes('specforgeVersion'))).toBe(true);
+    expect(result.errors.some((e) => e.path.includes('specforgeVersion') || e.message.includes('specforgeVersion'))).toBe(true);
   });
 
   it('rejects invalid specforgeVersion', () => {

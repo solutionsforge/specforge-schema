@@ -1,7 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { detectFormat, toJson, fromJson } from '../src/formats';
+import { detectFormat } from '../src/parser/detect';
+import { parse } from '../src/parser/parse';
+import { toJson, toYaml } from '../src/parser/convert';
+import type { SpecForgeSpec } from '../src/parser/types';
 
-const minimal = {
+const minimal: SpecForgeSpec = {
   specforgeVersion: '1.0',
   project: {
     id: '00000000-0000-0000-0000-000000000001',
@@ -30,33 +33,33 @@ describe('detectFormat', () => {
 describe('JSON round-trip', () => {
   it('round-trips JSON', () => {
     const json = JSON.stringify(minimal, null, 2);
-    const parsed = toJson(json, 'json');
-    const back = fromJson(parsed, 'json');
+    const parsed = parse(json, 'json');
+    const back = toJson(parsed);
     expect(JSON.parse(back)).toEqual(minimal);
   });
 });
 
 describe('YAML round-trip', () => {
   it('round-trips YAML', () => {
-    const yaml = fromJson(minimal, 'yaml');
-    const parsed = toJson(yaml, 'yaml');
+    const yaml = toYaml(minimal);
+    const parsed = parse(yaml, 'yaml');
     expect(parsed).toEqual(minimal);
   });
 });
 
-describe('toJson', () => {
+describe('parse', () => {
   it('parses JSON string', () => {
-    const result = toJson(JSON.stringify(minimal), 'json');
+    const result = parse(JSON.stringify(minimal), 'json');
     expect(result).toEqual(minimal);
   });
 
   it('parses YAML string', () => {
     const yaml = 'specforgeVersion: "1.0"\nproject:\n  id: "00000000-0000-0000-0000-000000000001"\n  name: Test Project\n';
-    const result = toJson(yaml, 'yaml');
+    const result = parse(yaml, 'yaml');
     expect(result).toEqual(minimal);
   });
 
   it('throws on TOON without package', () => {
-    expect(() => toJson('test', 'toon')).toThrow('TOON');
+    expect(() => parse('test', 'toon')).toThrow('TOON');
   });
 });

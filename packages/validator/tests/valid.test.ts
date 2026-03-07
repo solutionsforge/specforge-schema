@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { validate } from '../src/validate';
+import { validate } from '../src/validator/validate';
 
 describe('valid specs', () => {
   it('accepts minimal spec', () => {

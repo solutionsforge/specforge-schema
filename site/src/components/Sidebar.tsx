@@ -6,6 +6,8 @@ import { SCHEMA_TREE } from '@/data/schema-tree';
 
 const SIDEBAR_ITEMS = [
   { id: '/', label: 'Overview', icon: '◇' },
+  { id: '/why', label: 'Why This Format', icon: '◆' },
+  { id: '/getting-started', label: 'Getting Started', icon: '▷' },
   { id: '/schema', label: 'Schema Explorer', icon: '⬡' },
   { id: '/editor', label: 'Live Editor', icon: '⌘' },
   { id: '/formats', label: 'File Formats', icon: '◈' },
@@ -18,7 +20,8 @@ export default function Sidebar() {
 
   const isActive = (id: string) => {
     if (id === '/') return pathname === '/' || pathname === '/index' || pathname === '/index/';
-    return pathname.startsWith(id);
+    if (id === '/getting-started') return pathname.startsWith('/getting-started');
+    return pathname === id || pathname === `${id}/` || pathname.startsWith(`${id}/`);
   };
 
   return (

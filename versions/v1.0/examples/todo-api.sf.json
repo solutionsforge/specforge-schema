@@ -1,0 +1,223 @@
+{
+  "specforgeVersion": "1.0",
+  "project": {
+    "id": "a1b2c3d4-0000-0000-0000-000000000001",
+    "name": "todo-api"
+  },
+  "specifications": [
+    {
+      "id": "a1b2c3d4-0000-0000-0000-000000000010",
+      "title": "REST API for Todo Management",
+      "description": "A CRUD API for managing todo items with validation, error handling, and test coverage.",
+      "status": "ready",
+      "techStack": ["typescript", "express", "zod", "vitest"],
+      "patterns": {
+        "codeStandards": {
+          "language": "typescript",
+          "style": "functional",
+          "errorHandling": "Result pattern — never throw, always return",
+          "naming": "camelCase for variables, PascalCase for types, kebab-case for files"
+        },
+        "commonImports": [
+          "import { Request, Response, NextFunction } from 'express';",
+          "import { z } from 'zod';",
+          "import { Result, ok, err } from '../utils/result.js';"
+        ],
+        "returnTypes": {
+          "success": "{ success: true, data: T }",
+          "error": "{ success: false, error: { code: string, message: string } }"
+        }
+      },
+      "blueprints": [
+        {
+          "id": "a1b2c3d4-0000-0000-0000-0000000000b1",
+          "title": "API Route Structure",
+          "category": "architecture",
+          "format": "ascii",
+          "status": "approved",
+          "content": "POST   /todos       → createTodo\nGET    /todos       → listTodos\nGET    /todos/:id   → getTodo\nPATCH  /todos/:id   → updateTodo\nDELETE /todos/:id   → deleteTodo"
+        }
+      ],
+      "epics": [
+        {
+          "id": "a1b2c3d4-0000-0000-0000-000000000100",
+          "epicNumber": 1,
+          "title": "Core Data Layer",
+          "description": "Types, validation schemas, and in-memory store.",
+          "status": "todo",
+          "tickets": [
+            {
+              "id": "a1b2c3d4-0000-0000-0000-000000001001",
+              "ticketNumber": 1,
+              "title": "Define Todo types and Zod schemas",
+              "status": "ready",
+              "complexity": "small",
+              "estimatedHours": 0.5,
+              "implementation": {
+                "filesToCreate": [
+                  "src/types/todo.types.ts",
+                  "src/schemas/todo.schemas.ts"
+                ],
+                "steps": [
+                  "Define Todo interface with id, title, completed, createdAt",
+                  "Create CreateTodoSchema with zod (title: string, min 1, max 200)",
+                  "Create UpdateTodoSchema with zod (title?: string, completed?: boolean)",
+                  "Export inferred types from schemas"
+                ]
+              },
+              "codeReferences": [
+                {
+                  "name": "Result utility",
+                  "code": "export type Result<T, E = string> = { ok: true; value: T } | { ok: false; error: E };",
+                  "language": "typescript"
+                }
+              ],
+              "typeReferences": [
+                {
+                  "name": "Todo",
+                  "definition": "{ id: string; title: string; completed: boolean; createdAt: string; }"
+                }
+              ],
+              "acceptanceCriteria": [
+                "Todo interface exported from types/todo.types.ts",
+                "CreateTodoSchema validates title (1-200 chars, required)",
+                "UpdateTodoSchema allows partial updates",
+                "All types inferred from Zod schemas match Todo interface"
+              ],
+              "testSpecification": {
+                "types": ["unit"],
+                "commands": ["npx vitest run src/schemas/"],
+                "gates": ["unit"]
+              },
+              "dependencies": [],
+              "tags": ["types", "validation"]
+            },
+            {
+              "id": "a1b2c3d4-0000-0000-0000-000000001002",
+              "ticketNumber": 2,
+              "title": "Implement in-memory Todo store",
+              "status": "pending",
+              "complexity": "small",
+              "estimatedHours": 1,
+              "implementation": {
+                "filesToCreate": [
+                  "src/store/todo.store.ts"
+                ],
+                "steps": [
+                  "Create TodoStore class with Map<string, Todo> backing",
+                  "Implement create(input): Result<Todo>",
+                  "Implement findById(id): Result<Todo>",
+                  "Implement findAll(): Todo[]",
+                  "Implement update(id, input): Result<Todo>",
+                  "Implement delete(id): Result<void>"
+                ]
+              },
+              "typeReferences": [
+                {
+                  "name": "Todo",
+                  "definition": "src/types/todo.types.ts::Todo"
+                },
+                {
+                  "name": "CreateTodoInput",
+                  "definition": "src/schemas/todo.schemas.ts::CreateTodoInput"
+                }
+              ],
+              "acceptanceCriteria": [
+                "create() returns new Todo with generated UUID",
+                "findById() returns err for non-existent ID",
+                "update() merges partial input with existing todo",
+                "delete() returns err for non-existent ID",
+                "All methods return Result<T> — no exceptions thrown"
+              ],
+              "testSpecification": {
+                "types": ["unit"],
+                "commands": ["npx vitest run src/store/"],
+                "gates": ["unit"]
+              },
+              "dependencies": [
+                {
+                  "dependsOnId": "a1b2c3d4-0000-0000-0000-000000001001",
+                  "type": "requires"
+                }
+              ],
+              "tags": ["store", "data"]
+            }
+          ]
+        },
+        {
+          "id": "a1b2c3d4-0000-0000-0000-000000000200",
+          "epicNumber": 2,
+          "title": "API Routes",
+          "description": "Express route handlers for CRUD operations.",
+          "status": "todo",
+          "tickets": [
+            {
+              "id": "a1b2c3d4-0000-0000-0000-000000002001",
+              "ticketNumber": 3,
+              "title": "Implement Todo CRUD route handlers",
+              "status": "pending",
+              "complexity": "medium",
+              "estimatedHours": 2,
+              "implementation": {
+                "filesToCreate": [
+                  "src/routes/todo.routes.ts"
+                ],
+                "filesToModify": [
+                  "src/app.ts"
+                ],
+                "steps": [
+                  "Create router with express.Router()",
+                  "Implement POST /todos — validate body with CreateTodoSchema, call store.create()",
+                  "Implement GET /todos — call store.findAll(), return array",
+                  "Implement GET /todos/:id — validate UUID param, call store.findById()",
+                  "Implement PATCH /todos/:id — validate body with UpdateTodoSchema, call store.update()",
+                  "Implement DELETE /todos/:id — call store.delete()",
+                  "Mount router at /todos in app.ts"
+                ]
+              },
+              "codeReferences": [
+                {
+                  "name": "Response shape (success)",
+                  "code": "res.status(200).json({ success: true, data: todo });",
+                  "language": "typescript"
+                },
+                {
+                  "name": "Response shape (error)",
+                  "code": "res.status(404).json({ success: false, error: { code: 'NOT_FOUND', message: `Todo ${id} not found` } });",
+                  "language": "typescript"
+                }
+              ],
+              "typeReferences": [
+                {
+                  "name": "TodoStore",
+                  "definition": "src/store/todo.store.ts::TodoStore"
+                }
+              ],
+              "acceptanceCriteria": [
+                "POST /todos returns 201 with created todo",
+                "POST /todos returns 400 for invalid body",
+                "GET /todos returns 200 with array",
+                "GET /todos/:id returns 404 for missing todo",
+                "PATCH /todos/:id returns 200 with updated todo",
+                "DELETE /todos/:id returns 204 on success",
+                "All error responses use standard error shape"
+              ],
+              "testSpecification": {
+                "types": ["unit", "integration"],
+                "commands": ["npx vitest run src/routes/"],
+                "gates": ["unit", "integration"]
+              },
+              "dependencies": [
+                {
+                  "dependsOnId": "a1b2c3d4-0000-0000-0000-000000001002",
+                  "type": "blocks"
+                }
+              ],
+              "tags": ["routes", "api"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

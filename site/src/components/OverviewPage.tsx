@@ -51,7 +51,54 @@ export default function OverviewPage() {
         </div>
       </div>
 
+      <div className="ov-core-message">
+        <div className="ov-core-label">The Core Insight</div>
+        <p className="ov-core-text">
+          Traditional tickets say <strong>what</strong>. SpecForge tickets say <strong>what, where, how, and how to verify</strong>.
+          Every field exists because its absence caused a real failure in production AI agent orchestration.
+        </p>
+      </div>
+
+      <div className="ov-comparison">
+        <div className="ov-comparison-label"><span>Human Ticket vs. Agent Ticket</span></div>
+        <div className="ov-comparison-grid">
+          <div className="ov-ticket ov-ticket-human">
+            <div className="ov-ticket-header">Traditional Ticket</div>
+            <div className="ov-ticket-body">
+              <div className="ov-field"><span className="ov-key">Title</span> Add user authentication</div>
+              <div className="ov-field"><span className="ov-key">Desc</span> Implement JWT-based auth with login/register endpoints</div>
+              <div className="ov-field"><span className="ov-key">Points</span> 5</div>
+            </div>
+            <div className="ov-ticket-footer ov-footer-fail">✗ Agent will guess file paths and invent types</div>
+          </div>
+          <div className="ov-ticket ov-ticket-agent">
+            <div className="ov-ticket-header">SpecForge Ticket</div>
+            <pre className="ov-ticket-code">{`{
+  "implementation": {
+    "filesToCreate": ["src/middleware/auth.ts"],
+    "filesToModify": ["src/routes/index.ts"]
+  },
+  "codeReferences": [{ "name": "JwtConfig", ... }],
+  "typeReferences": [{ "name": "UserDocument", ... }],
+  "dependencies": [{ "type": "requires", ... }]
+}`}</pre>
+            <div className="ov-ticket-footer ov-footer-pass">✓ Every reference explicit, every exit verifiable</div>
+          </div>
+        </div>
+        <div className="ov-comparison-cta"><Link href="/why">See the full comparison and 8 lessons →</Link></div>
+      </div>
+
       <div className="overview-grid">
+        <Link href="/why" className="overview-card">
+          <div className="overview-card-icon">◆</div>
+          <h3>Why This Format</h3>
+          <p>Eight lessons from 400+ builds. Every field exists because its absence caused a real failure.</p>
+        </Link>
+        <Link href="/getting-started" className="overview-card">
+          <div className="overview-card-icon">▷</div>
+          <h3>Getting Started</h3>
+          <p>Write, validate, and use a SpecForge spec in five minutes. No account required.</p>
+        </Link>
         <Link href="/schema" className="overview-card">
           <div className="overview-card-icon">⬡</div>
           <h3>Schema Explorer</h3>
@@ -81,6 +128,13 @@ export default function OverviewPage() {
           https://schema.specforge.tech/schema/v1.0/specforge-schema.json
         </p>
       </a>
+
+      <div className="ov-positioning">
+        <p>
+          The SpecForge Format is an open specification. Any tool can generate, validate, and consume{' '}
+          <code>.specforge.json</code> files. The format belongs to the ecosystem.
+        </p>
+      </div>
     </div>
   );
 }
